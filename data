@@ -1,0 +1,38 @@
+Firestore Root
+├── users/ (Collection)
+│   └── {uid} (Document - Theo Authentication ID)
+│       ├── name: "Nguyen Van A"
+│       ├── email: "a@test.com"
+│       │
+│       ├── pantry_items/ (Sub-collection)
+│       │   └── {pantryId}
+│       │       ├── name: "Thịt bò"
+│       │       ├── searchKey: "thit bo" (Để tìm kiếm offline dễ hơn)
+│       │       ├── quantity: 500.0
+│       │       ├── unit: "gram"
+│       │       ├── expiryDate: Timestamp (Quan trọng cho FR3)
+│       │       └── category: "Thịt"
+│       │
+│       ├── shopping_list/ (Sub-collection)
+│       │   └── {itemId}
+│       │       ├── name: "Hành tây"
+│       │       ├── isBought: false
+│       │       ├── quantity: 2.0
+│       │       ├── unit: "củ"
+│       │       └── sourceRecipeId: 73420 (ID từ Spoonacular - Optional)
+│       │
+│       └── meal_plans/ (Sub-collection)
+│           └── {planId}
+│               ├── date: Timestamp (Ngày ăn)
+│               ├── mealType: "Dinner"
+│               ├── recipeId: 73420 (ID từ Spoonacular)
+│               ├── recipeTitle: "Bò xào hành" (Lưu cứng để hiển thị nhanh)
+│               └── recipeImage: "https://..." (Lưu cứng để hiển thị nhanh)
+│
+└── recipes_cache/ (Collection - Dùng chung cho cả App)
+    └── {spoonacularId} (Document ID chính là ID của API luôn)
+        ├── title: "Bò xào hành"
+        ├── image: "https://..."
+        ├── readyInMinutes: 45
+        ├── instructions: "Bước 1:..." (Lưu dạng HTML hoặc Text)
+        └── cachedAt: Timestamp (Để biết khi nào cần update lại từ API)
