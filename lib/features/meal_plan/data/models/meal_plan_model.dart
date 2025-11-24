@@ -1,24 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../domain/entities/meal_plan_entry.dart';
 
-class MealPlanEntryModel extends MealPlanEntryEntity {
-  MealPlanEntryModel({
-    required super.id,
-    required super.date,
-    required super.mealType,
-    required super.recipeId,
-    required super.recipeTitle,
-    required super.recipeImage,
+class MealPlanModel {
+  final String id;
+  final DateTime date;
+  final String mealType;
+  final int recipeId;    // ID Spoonacular
+  final String recipeTitle;
+  final String recipeImage;
+
+  MealPlanModel({
+    required this.id,
+    required this.date,
+    required this.mealType,
+    required this.recipeId,
+    required this.recipeTitle,
+    required this.recipeImage,
   });
 
-  factory MealPlanEntryModel.fromJson(Map<String, dynamic> json, String id) {
-    return MealPlanEntryModel(
+  factory MealPlanModel.fromJson(Map<String, dynamic> json, String id) {
+    return MealPlanModel(
       id: id,
       date: (json['date'] as Timestamp).toDate(),
-      mealType: json['mealType'] as String,
-      recipeId: json['recipeId'] as int,
-      recipeTitle: json['recipeTitle'] as String,
-      recipeImage: json['recipeImage'] as String,
+      mealType: json['mealType'] as String? ?? 'dinner',
+      recipeId: (json['recipeId'] as num).toInt(),
+      recipeTitle: json['recipeTitle'] as String? ?? '',
+      recipeImage: json['recipeImage'] as String? ?? '',
     );
   }
 

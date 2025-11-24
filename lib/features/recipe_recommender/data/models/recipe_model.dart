@@ -1,36 +1,80 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../domain/entities/recipe.dart';
-// import 'recipe_ingredient_model.dart'; // Tạm thời chưa dùng đến chi tiết nguyên liệu thì comment lại cũng được
+import 'package:equatable/equatable.dart';
+import 'recipe_ingredient_model.dart';
 
-class RecipeModel extends RecipeEntity {
+class RecipeModel extends Equatable {
+  final int id;
+  final String title;
+  final String? image;
+  final int? cookingTimeMinutes;
+  final String? instructions;
+
+  final int usedIngredientCount;
+  final int missedIngredientCount;
+
+  final List<RecipeIngredientModel>? ingredients;
+
   final DateTime? cachedAt;
 
-  RecipeModel({
-    required super.id,
-    required super.title,
-    required super.image,
-    required super.readyInMinutes,
-    required super.instructions,
-    super.usedIngredientCount,
-    super.missedIngredientCount,
+  const RecipeModel({
+    required this.id,
+    required this.title,
+    this.image,
+    this.cookingTimeMinutes,
+    this.instructions,
+    this.usedIngredientCount = 0,
+    this.missedIngredientCount = 0,
+    this.ingredients,
     this.cachedAt,
-    // required super.requiredIngredients, // Tạm thời bỏ qua list chi tiết nếu chưa parse
   });
 
-  // Factory Method: Xử lý thông minh cả từ Cache và API
   factory RecipeModel.fromJson(Map<String, dynamic> json) {
+
+    List<RecipeIngredientModel> parsedIngredients = [];
+
+    if (json['extendedIngredients'] != null) {
+      parsedIngredients = (json['extendedIngredients'] as List)
+          .map((i) => RecipeIngredientModel.fromJson(i))
+          .toList();
+    } else {
+      final used = (json['usedIngredients'] as List? ?? []);
+      final missed = (json['missedIngredients'] as List? ?? []);
+      parsedIngredients = [...used, ...missed]
+          .map((i) => RecipeIngredientModel.fromJson(i))
+          .toList();
+    }
+
     return RecipeModel(
       id: json['id'] as int,
       title: json['title'] as String? ?? 'Món chưa tên',
-      image: json['image'] as String?, // Cho phép null
-      readyInMinutes: json['readyInMinutes'] as int? ?? 0,
+      image: json['image'] as String?,
+
+      cookingTimeMinutes: json['readyInMinutes'] as int? ?? 0,
+
       instructions: json['instructions'] as String? ?? '',
 
-      // MAP 2 TRƯỜNG QUAN TRỌNG CHO UI HOME
       usedIngredientCount: json['usedIngredientCount'] as int? ?? 0,
       missedIngredientCount: json['missedIngredientCount'] as int? ?? 0,
 
+      ingredients: parsedIngredients,
       cachedAt: DateTime.now(),
     );
   }
+
+  factory RecipeModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    return RecipeModel(
+      id: data['id'] as int,
+      title: data['title'] ?? '',
+      image: data['image'],
+      cookingTimeMinutes: data['cookingTimeMinutes'],
+      instructions: data['instructions'],
+      usedIngredientCount: 0,
+      missedIngredientCount: 0,
+      cachedAt: (data['cachedAt'] as Timestamp?)?.toDate(),
+    );
+  }
+
+  @override
+  List<Object?> get props => [id, title, image, cookingTimeMinutes, usedIngredientCount, missedIngredientCount];
 }

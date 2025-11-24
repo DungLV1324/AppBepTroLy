@@ -188,8 +188,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                         imageUrl: recipe.image ?? '',
 
-                        time: (recipe.readyInMinutes ?? 0) > 0
-                            ? '${recipe.readyInMinutes} phút'
+                        time: (recipe.cookingTimeMinutes ?? 0) > 0
+                            ? '${recipe.cookingTimeMinutes} phút'
                             : 'Không rõ',
 
                         difficulty: 'Trung bình',

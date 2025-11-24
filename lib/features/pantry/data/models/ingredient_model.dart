@@ -6,7 +6,8 @@ class IngredientModel extends Equatable {
   final String name;
   final double quantity;
   final String unit;
-  final DateTime expiryDate;
+  final DateTime expiryDate; // Hạn sử dụng
+  final DateTime entryDate;  // Ngày nhập kho (để sắp xếp)
 
   const IngredientModel({
     required this.id,
@@ -14,6 +15,7 @@ class IngredientModel extends Equatable {
     required this.quantity,
     required this.unit,
     required this.expiryDate,
+    required this.entryDate,
   });
 
   factory IngredientModel.fromFirestore(DocumentSnapshot doc) {
@@ -22,11 +24,11 @@ class IngredientModel extends Equatable {
 
     return IngredientModel(
       id: doc.id,
-      name: data['name'] ?? '',
+      name: data['name'] ?? 'Nguyên liệu lạ',
       quantity: (data['quantity'] as num?)?.toDouble() ?? 0.0,
       unit: data['unit'] ?? 'g',
-      // Chuyển đổi Timestamp của Firebase sang DateTime của Dart
       expiryDate: (data['expiryDate'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      entryDate: (data['entryDate'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 
@@ -36,9 +38,27 @@ class IngredientModel extends Equatable {
       'quantity': quantity,
       'unit': unit,
       'expiryDate': Timestamp.fromDate(expiryDate),
+      'entryDate': Timestamp.fromDate(entryDate),
     };
   }
 
+  IngredientModel copyWith({
+    String? name,
+    double? quantity,
+    String? unit,
+    DateTime? expiryDate,
+    DateTime? entryDate,
+  }) {
+    return IngredientModel(
+      id: id,
+      name: name ?? this.name,
+      quantity: quantity ?? this.quantity,
+      unit: unit ?? this.unit,
+      expiryDate: expiryDate ?? this.expiryDate,
+      entryDate: entryDate ?? this.entryDate,
+    );
+  }
+
   @override
-  List<Object?> get props => [id, name, quantity, unit, expiryDate];
+  List<Object?> get props => [id, name, quantity, unit, expiryDate, entryDate];
 }

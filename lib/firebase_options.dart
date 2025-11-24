@@ -73,4 +73,3 @@ class DefaultFirebaseOptions {
     iosBundleId: 'tlu.btl.appBepTroLy',
   );
 }
-}

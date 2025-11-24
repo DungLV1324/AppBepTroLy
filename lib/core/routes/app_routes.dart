@@ -2,7 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import '../../features/auth/presentation/pages/login_screen.dart';
 import '../../features/home/presentation/pages/home_screen.dart';
-import '../../features/meal_plan/presentation/pages/meal_planner_screen.dart';
+import '../../features/expiry_alert/presentation/pages/notification_screen.dart';
 import '../../features/meal_plan/presentation/pages/shopping_list_screen.dart';
 import '../../features/pantry/presentation/pages/pantry_screen.dart';
 import '../../features/auth/presentation/pages/auth_gate.dart';
